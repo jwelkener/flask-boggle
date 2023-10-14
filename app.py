@@ -1,24 +1,22 @@
 
-from flask import Flask, request, render_template, jsoonify, session
+from flask import Flask, request, render_template, jsonify, session
 from boggle import Boggle
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = "sdf987ds9a"
 
 boggle_game = Boggle()
 
 @app.route("/")
 def homepage():
     """Show board."""
-
-    board = boggle_game.make_board()
-    session['board'] = board
+    session['board'] = boggle_game.make_board()
     highscore = session.get("highscore", 0)
     nplays = session.get("nplays", 0)
 
-    return render_template("index.html", board=board, highscore=highscore,
-                           nplays=nplays)
+    return render_template("index.html", board=session['board'], highscore=highscore, nplays=nplays)
 
-@app.route("check-word")
+@app.route("/check-word")
 def check_word():
     """Check if word is in dictionary."""
 
